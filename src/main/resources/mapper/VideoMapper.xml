@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xdclass.online_xdclass.mapper.VideoMapper">
+
+    <select id="listVideo" resultType="Video">
+
+        select * from video;
+
+    </select>
+
+    <select id="listVideoBanner" resultType="VideoBanner">
+
+    select * from video_banner order by weight asc;
+
+    </select>
+
+    <resultMap id="videoDetailResultMap" type="Video">
+
+        <id column="id" jdbcType="INTEGER" property="id"/>
+
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="summary" jdbcType="VARCHAR" property="summary"/>
+        <result column="cover_img" jdbcType="VARCHAR" property="coverImg"/>
+        <result column="price" jdbcType="INTEGER" property="price"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="point" jdbcType="DOUBLE" property="point"/>
+
+        <collection property="chapterList" ofType="Chapter">
+            <id column="chapter_id" jdbcType="INTEGER" property="id"/>
+            <result column="chapter_title" jdbcType="VARCHAR" property="title"/>
+            <result column="chapter_ordered" jdbcType="INTEGER" property="ordered"/>
+            <result column="chapter_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+
+            <collection property="episodeList" ofType="Episode">
+                <id column="episode_id" jdbcType="INTEGER" property="id"/>
+                <result column="episode_title" jdbcType="VARCHAR" property="title"/>
+                <result column="episode_num" jdbcType="INTEGER" property="num"/>
+                <result column="episode_ordered" jdbcType="INTEGER" property="ordered"/>
+                <result column="episode_play_url" jdbcType="VARCHAR" property="playUrl"/>
+<!--                <id column="episode_chapter_id" jdbcType="INTEGER" property="chapterId"/>-->
+                <result column="episode_free" jdbcType="INTEGER" property="free"/>
+<!--                <id column="episode_video_id" jdbcType="INTEGER" property="videoId"/>-->
+                <result column="episode_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findDetailById" resultMap="videoDetailResultMap">
+
+        SELECT
+            video.*,
+            chapter.id chapter_id,
+            chapter.title chapter_title,
+            chapter.ordered chapter_ordered,
+            chapter.create_time chapter_create_time,
+            episode.id episode_id,
+            episode.title episode_title,
+            episode.num episode_num,
+            episode.ordered episode_ordered,
+            episode.play_url episode_play_url,
+            episode.free episode_free,
+            episode.create_time episode_create_time
+        FROM `video`
+        LEFT JOIN chapter
+        ON video.id = chapter.video_id
+        LEFT JOIN episode
+        ON episode.chapter_id = chapter.id
+        WHERE video.id = #{video_id}
+        ORDER BY chapter.ordered,episode.num
+
+    </select>
+
+    <select id="findById" resultType="Video">
+
+        select * from video where id = #{video_id}
+
+    </select>
+</mapper>

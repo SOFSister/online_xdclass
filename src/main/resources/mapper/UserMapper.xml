@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--CREATE TABLE `user` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) DEFAULT NULL COMMENT '昵称',
+  `pwd` varchar(124) DEFAULT NULL COMMENT '密码',
+  `head_img` varchar(524) DEFAULT NULL COMMENT '头像',
+  `phone` varchar(64) DEFAULT '' COMMENT '手机号',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `phone` (`phone`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;-->
+<mapper namespace="net.xdclass.online_xdclass.mapper.UserMapper">
+
+    <insert id="save" parameterType="User">
+
+        insert into user(name,pwd,head_img,phone,create_time)
+        values(#{name,jdbcType = VARCHAR},
+               #{pwd,jdbcType = VARCHAR},
+               #{headImg,jdbcType = VARCHAR},
+               #{phone,jdbcType = VARCHAR},
+               #{createTime,jdbcType = TIMESTAMP})
+
+    </insert>
+
+    <select id="findByPhoneAndPwd" resultType="User">
+
+        select * from user where phone = #{phone} and pwd = #{pwd}
+
+    </select>
+
+    <select id="findById" resultType="User">
+
+        select * from user where id = #{user_id}
+
+    </select>
+
+</mapper>
